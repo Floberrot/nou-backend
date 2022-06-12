@@ -12,11 +12,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Uid\Uuid;
+use OpenApi\Annotations as OA;
 
 class InvitController extends AbstractController
 {
-
-
     private GroupRepository $groupRepository;
     private UserRepository $userRepository;
 
@@ -27,7 +26,21 @@ class InvitController extends AbstractController
     }
 
     /**
+     * Invit an user in your group
      * @Route("/users/{userEmail}/groupes/{groupId}/sendInvit", name="sendInvit", methods={"GET"})
+     * @OA\Response(
+     *     response=200,
+     *     description="User is invited"
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="user not found"
+     * )
+     * @OA\Response(
+     *     response=500,
+     *     description="Error server"
+     * )
+     * @OA\Tag(name="User - Invitation")
      */
     public function sendInvit(Request $request): JsonResponse
     {
@@ -41,11 +54,11 @@ class InvitController extends AbstractController
         $userId = $eUser->getId();
         $url = 'http://localhost:8000/users/' . $userId . '/groupes/' . $groupId . '/invites/' . $invitId . '/accept';
         $body = $this->renderView('invitation-accept.html.twig',
-        [
-            'user' => $eGroup->getAdmin()->getUsername(),
-            'group' => $eGroup->getName(),
-            'link' =>$url
-        ]);
+            [
+                'user' => $eGroup->getAdmin()->getUsername(),
+                'group' => $eGroup->getName(),
+                'link' => $url
+            ]);
         if ($invit->verifUser($groupId, $userId)) {
             $invit->sendMail($userId, $groupId, $body, $subject, $userEmail);
             return new JsonResponse(
@@ -62,7 +75,21 @@ class InvitController extends AbstractController
     }
 
     /**
+     * The user accecpt your invit
      * @Route("/users/{userId}/groupes/{groupId}/invites/{invitId}/accept", name="invit_accept", methods={"GET"})
+     * @OA\Response(
+     *     response=200,
+     *     description="User accept invit"
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="user not found"
+     * )
+     * @OA\Response(
+     *     response=500,
+     *     description="Error server"
+     * )
+     * @OA\Tag(name="User - Invitation")
      */
     public function invitAccept(Request $request): Response
     {
@@ -95,7 +122,21 @@ class InvitController extends AbstractController
     }
 
     /**
+     * The user decline your invit
      * @Route("/users/{userId}/groupes/{groupId}/invites/{invitId}/decline", name="invit_decline", methods={"GET"})
+     * @OA\Response(
+     *     response=200,
+     *     description="User decline invit"
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="user not found"
+     * )
+     * @OA\Response(
+     *     response=500,
+     *     description="Error server"
+     * )
+     * @OA\Tag(name="User - Invitation")
      */
     public function invitDecline(Request $request): JsonResponse
     {

@@ -8,10 +8,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use OpenApi\Annotations as OA;
 
 class AuthController extends AbstractController
 {
-
     private UserRepository $userRepository;
     private string $secret_key;
 
@@ -22,7 +22,33 @@ class AuthController extends AbstractController
     }
 
     /**
+     * Login user
      * @Route("/sign-in", name="login", methods={"POST"})
+     * @OA\Response(
+     *     response=200,
+     *     description="User is connected"
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="User not found"
+     * )
+     * @OA\Response(
+     *     response=500,
+     *     description="Error server"
+     * )
+     *  * @OA\RequestBody(
+     *       required=true,
+     *     @OA\JsonContent(
+     *           example={
+     *               "username": "username",
+     *               "password": "my password"
+     *            },
+     *           type="object",
+     *           @OA\Property(property="email", type="varchar(180)", description="User email"),
+     *           @OA\Property(property="password", type="varchar(255)", description="User password"),
+     *       ),
+     * )
+     * @OA\Tag(name="User - Auth")
      */
     public function login(Request $request): JsonResponse
     {
@@ -37,7 +63,34 @@ class AuthController extends AbstractController
     }
 
     /**
+     * Register an user
      * @Route("/sign-up", name="register", methods={"POST"})
+     * @OA\Response(
+     *     response=200,
+     *     description="User is connected"
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="User not found"
+     * )
+     * @OA\Response(
+     *     response=500,
+     *     description="Error server"
+     * )
+     *  * @OA\RequestBody(
+     *       required=true,
+     *     @OA\JsonContent(
+     *           example={
+     *               "email": "email@domain.com",
+     *               "username": "username",
+     *               "password": "my password"
+     *            },
+     *           type="object",
+     *           @OA\Property(property="email", type="varchar(180)", description="User email"),
+     *           @OA\Property(property="password", type="varchar(255)", description="User password"),
+     *       ),
+     * )
+     * @OA\Tag(name="User - Auth")
      */
     public function register(Request $request): JsonResponse
     {

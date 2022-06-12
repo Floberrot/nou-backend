@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use OpenApi\Annotations as OA;
 
 class NoteController extends AbstractController
 {
@@ -26,7 +27,55 @@ class NoteController extends AbstractController
     }
 
     /**
+     * Create a note
      * @Route("/note", name="create note", methods={"POST"})
+     * @OA\Response(
+     *     response=200,
+     *     description="users are recovered"
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="Group not found"
+     * )
+     * @OA\Response(
+     *     response=500,
+     *     description="Error server"
+     * )
+     * @OA\RequestBody(
+     *       required=true,
+     *       @OA\MediaType(
+     *           mediaType="form-data",
+     *           @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="format",
+     *                     description="Format of the note (file or text)",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="group",
+     *                     description="name of the group",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="author",
+     *                     description="author of the note",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="content",
+     *                     description="Text of the note (if file, it can be null because we set the name of the file)",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="file",
+     *                     description="If the format is file, you have to send it",
+     *                     type="file"
+     *                 )
+     *              )
+     *   ),
+     * )
+     * @OA\Tag(name="Note")
      */
     public function create(Request $request): JsonResponse
     {
@@ -62,8 +111,21 @@ class NoteController extends AbstractController
     }
 
     /**
-     * @Route("/notes/{group_id}/{type_note}", name="get all notes by group", methods={"GET"})
      * Get all notes by type of note (text or file)
+     * @Route("/notes/{group_id}/{type_note}", name="get all notes by group", methods={"GET"})
+     * @OA\Response(
+     *     response=200,
+     *     description="Notes are recovered"
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="notes/user not found"
+     * )
+     * @OA\Response(
+     *     response=500,
+     *     description="Error server"
+     * )
+     * @OA\Tag(name="Note")
      */
     public function getAllNotesByGroup(Request $request): JsonResponse
     {
@@ -88,8 +150,21 @@ class NoteController extends AbstractController
     }
 
     /**
+     * Delete a note of a group
      * @Route("/note/{group_id}/{note_id}", name="delete note of a group", methods={"DELETE"})
-     * Get all notes by type of note (text or file)
+     * @OA\Response(
+     *     response=200,
+     *     description="Note is deleted"
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="note not found"
+     * )
+     * @OA\Response(
+     *     response=500,
+     *     description="Error server"
+     * )
+     * @OA\Tag(name="Note")
      */
     public function delete(Request $request): JsonResponse
     {
@@ -116,8 +191,33 @@ class NoteController extends AbstractController
     }
 
     /**
+     * Update a note
      * @Route("/note", name="udpate note", methods={"PATCH"})
-     * Get all notes by type of note (text or file)
+     * @OA\Response(
+     *     response=200,
+     *     description="Note is updated"
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="note not found"
+     * )
+     * @OA\Response(
+     *     response=500,
+     *     description="Error server"
+     * )
+     * @OA\RequestBody(
+     *       required=true,
+     *     @OA\JsonContent(
+     *           example={
+     *               "note_id": "id of your note",
+     *               "content_note": "If the note format is text, you can change the content"
+     *            },
+     *           type="object",
+     *           @OA\Property(property="note_id", type="varchar(180)", description="id of your note"),
+     *           @OA\Property(property="content_note", type="varchar(255)", description="If the note format is text, you can change the content"),
+     *       ),
+     * )
+     * @OA\Tag(name="Note")
      */
     public function update(Request $request): JsonResponse
     {
@@ -144,7 +244,21 @@ class NoteController extends AbstractController
     }
 
     /**
+     * Change status of the note (DONe or TO-DO)
      * @Route("/note/status", name="change_status", methods={"POST"})
+     * @OA\Response(
+     *     response=200,
+     *     description="Note is updated"
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="note not found"
+     * )
+     * @OA\Response(
+     *     response=500,
+     *     description="Error server"
+     * )
+     * @OA\Tag(name="Note")
      */
     public function changeStatus(Request $request): JsonResponse
     {
@@ -168,5 +282,4 @@ class NoteController extends AbstractController
             );
         }
     }
-
 }

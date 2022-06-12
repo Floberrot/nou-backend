@@ -13,7 +13,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AdminController extends AbstractController
 {
-
     private GroupRepository $groupRepository;
     private UserRepository $userRepository;
 
@@ -23,9 +22,8 @@ class AdminController extends AbstractController
         $this->userRepository = $userRepository;
     }
     /**
+     * Change admin of group
      * @Route("group/{groupId}/user/{userId}", name="admin_manage", methods={"POST"})
-     *  /**
-     * Login user
      * @OA\Response(
      *     response=200,
      *     description="User(amdin) is modified"
