@@ -6,6 +6,7 @@ use App\Entity\Group;
 use App\Exception\UserNotFound;
 use App\Repository\GroupRepository;
 use App\Repository\UserRepository;
+use phpDocumentor\Reflection\Types\Integer;
 
 class GroupManagement
 {
@@ -106,5 +107,9 @@ class GroupManagement
     public function update(int $group_id, string $group_name)
     {
         $this->groupRepository->update($group_id, $group_name);
+    }
+
+    public function checkIfUserIsAuthorized(int $groupId, int $userId) {
+        return $this->groupRepository->checkUserInGroup($groupId, $userId);
     }
 }

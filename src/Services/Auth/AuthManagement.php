@@ -18,7 +18,7 @@ class AuthManagement
         $this->secret_key = $secret_key;
     }
 
-    public function register(string $password, string $email, string $username) : string
+    public function register(string $password, string $email, string $username): string
     {
         $this->userRepository->register(self::encodePassword($password), $email, $username);
         return self::encodeToken($this->secret_key,
@@ -30,18 +30,30 @@ class AuthManagement
             ]);
     }
 
-    public function login(string $username, string $password) : string
+    public function login(string $username, string $password): string
     {
         if (self::ensurePasswordIsValid($password, $this->userRepository->findOneByUsername($username)->getPassword())) {
-            $this->userRepository->login($username);
+            $user = $this->userRepository->login($username);
+            $groups = [];
+            foreach ($user->getGroups() as $group) {
+                array_push($groups,
+                    [
+                        'group_id' => $group->getId(),
+                        'group_name' => $group->getName(),
+                    ]);
+            }
+            json_encode($groups);
             return self::encodeToken($this->secret_key,
                 [
-                    "user_id" => $this->userRepository->login($username)->getId(),
+                    "user_id" => $user->getId(),
+                    'email' => $user->getEmail(),
+                    'groups' => $groups,
                     "username" => $username,
                     "iat" => time(),
                     "exp" => time() + 60 * 60
                 ]);
-        } throw new UserNotFound($username);
+        }
+        throw new UserNotFound($username);
     }
 
 

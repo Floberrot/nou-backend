@@ -173,4 +173,17 @@ class GroupRepository extends ServiceEntityRepository
             throw new \Exception();
         }
     }
+
+    public function checkUserInGroup(int $groupId, int $userId): bool
+    {
+        $group = self::find($groupId);
+        $adminId = $group->getAdmin()->getId();
+        $participantsId = [];
+        foreach ($group->getParticipants() as $participant) {
+            $participantsId[] = $participant->getId();
+        }
+        if ($userId === $adminId || in_array($userId, $participantsId))
+            return true;
+        return false;
+    }
 }

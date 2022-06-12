@@ -243,4 +243,25 @@ class GroupController extends AbstractController
             );
         }
     }
+
+    /**
+     * @Route("/check/group/{groupId}/user/{userId}", name="checkUserInGroup", methods={"POST"})
+     */
+    public function checkIfUserIsAuthorized(Request $request): JsonResponse
+    {
+        $groupId = $request->get('groupId');
+        $userId = $request->get('userId');
+        $group = new GroupManagement($this->groupRepository, $this->userRepository);
+        if ($group->checkIfUserIsAuthorized($groupId, $userId))
+            return new JsonResponse(
+                [
+                    'isAuthorized' => true
+                ],
+            );
+        return new JsonResponse(
+            [
+                'isAuthorized' => false
+            ],
+        );
+    }
 }

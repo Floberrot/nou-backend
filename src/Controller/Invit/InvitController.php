@@ -113,6 +113,4 @@ class InvitController extends AbstractController
             ], 200
         );
     }
-
-
 }
