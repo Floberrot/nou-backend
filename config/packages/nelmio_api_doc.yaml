@@ -1,0 +1,18 @@
+nelmio_api_doc:
+  documentation:
+    info:
+      title: Nou - API
+      description: Here we have all the endpoints of the front app -> Nou
+      version: 1.0.1
+    components:
+      securitySchemes:
+        Bearer:
+          type: http
+          scheme: bearer
+          bearerFormat: JWT
+    security:
+      - Bearer: []
+  areas:
+    disable_default_routes: true
+    path_patterns:
+      - ^/api(?!/doc$)
