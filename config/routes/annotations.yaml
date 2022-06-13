@@ -1,6 +1,8 @@
-controllers:
-    resource: ../../src/Controller/
-    type: annotation
+api:
+  prefix: api
+  name_prefix: api_
+  resource: ../../src/Controller
+  type: annotation
 
 kernel:
     resource: ../../src/Kernel.php
