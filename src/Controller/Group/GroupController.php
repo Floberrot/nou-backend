@@ -297,6 +297,48 @@ class GroupController extends AbstractController
 
     /**
      * Add an user in a group
+     * @Route("/{group_name}/delete/{username}", name="Delete user in group", methods={"DELETE"})
+     * @OA\Response(
+     *     response=200,
+     *     description="A  user has been deleted from the group"
+     * )
+     * @OA\Response(
+     *     response=404,
+     *     description="Group/user not found"
+     * )
+     * @OA\Response(
+     *     response=500,
+     *     description="Error server"
+     * )
+     * @OA\Tag(name="Group")
+     */
+    public function removeOneParticipant(Request $request): JsonResponse
+    {
+        try {
+            $group_name = $request->get('group_name');
+            $username = $request->get('username');
+            $group = new GroupManagement($this->groupRepository, $this->userRepository);
+            $group->removeParticipantsInAGroup($group_name, $username);
+            return new JsonResponse(
+                [
+                    'message' => "$username has been deleted to $group_name group"
+                ], 200
+            );
+        } catch (\Exception $exception) {
+            $exception->getCode() === 0
+                ? $code = 500
+                : $code = $exception->getCode();
+            return new JsonResponse(
+                [
+                    'message' => $exception->getMessage()
+                ], $code
+            );
+        }
+
+    }
+
+    /**
+     * Add an user in a group
      * @Route("/{group_name}/add/{username}", name="add user in group", methods={"POST"})
      * @OA\Response(
      *     response=200,
