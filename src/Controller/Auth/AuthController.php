@@ -2,6 +2,7 @@
 
 namespace App\Controller\Auth;
 
+use App\Repository\GroupRepository;
 use App\Repository\UserRepository;
 use App\Services\Auth\AuthManagement;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,11 +15,13 @@ class AuthController extends AbstractController
 {
     private UserRepository $userRepository;
     private string $secret_key;
+    private GroupRepository $groupRepository;
 
-    public function __construct(UserRepository $userRepository, string $secret_key)
+    public function __construct(UserRepository $userRepository, GroupRepository $groupRepository, string $secret_key)
     {
         $this->userRepository = $userRepository;
         $this->secret_key = $secret_key;
+        $this->groupRepository = $groupRepository;
     }
 
     /**
@@ -53,7 +56,7 @@ class AuthController extends AbstractController
     public function login(Request $request): JsonResponse
     {
         $res = json_decode($request->getContent());
-        $auth = new AuthManagement($this->userRepository, $this->secret_key);
+        $auth = new AuthManagement($this->userRepository, $this->groupRepository, $this->secret_key);
         return new JsonResponse(
             [
                 'token' => $auth->login($res->username, $res->password),

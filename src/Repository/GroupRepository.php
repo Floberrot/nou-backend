@@ -186,4 +186,17 @@ class GroupRepository extends ServiceEntityRepository
             return true;
         return false;
     }
+
+    public function getGroupsOfAnUser(int $user_id): array
+    {
+        $groups_membership = [];
+        $groups = self::findAll();
+        foreach ($groups as $group) {
+            foreach ($group->getParticipants() as $participant) {
+                if ($participant->getId() === $user_id)
+                    array_push($groups_membership,$group);
+            }
+        }
+        return $groups_membership;
+    }
 }

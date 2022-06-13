@@ -52,7 +52,7 @@ class InvitController extends AbstractController
         $userEmail = $request->get('userEmail');
         $eUser = $this->userRepository->findOneByEmail($userEmail);
         $userId = $eUser->getId();
-        $url = 'http://localhost:8000/users/' . $userId . '/groupes/' . $groupId . '/invites/' . $invitId . '/accept';
+        $url = 'http://localhost:8000/api/users/' . $userId . '/groupes/' . $groupId . '/invites/' . $invitId . '/accept';
         $body = $this->renderView('invitation-accept.html.twig',
             [
                 'user' => $eGroup->getAdmin()->getUsername(),
