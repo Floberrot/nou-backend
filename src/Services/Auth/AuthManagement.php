@@ -40,20 +40,24 @@ class AuthManagement
             $groups = [];
             // GEt groups that own by this user
             foreach ($user->getGroups() as $group) {
-                array_push($groups,
-                    [
-                        'group_id' => $group->getId(),
-                        'group_name' => $group->getName(),
-                    ]);
+                if ($group->getIsActive()) {
+                    array_push($groups,
+                        [
+                            'group_id' => $group->getId(),
+                            'group_name' => $group->getName(),
+                        ]);
+                }
             }
             // Get group they are in
             $group_user_in = $this->groupRepository->getGroupsOfAnUser($user->getId());
             foreach ($group_user_in as $group_of_user) {
-                array_push($groups,
-                    [
-                        'group_id' => $group_of_user->getId(),
-                        'group_name' => $group_of_user->getName(),
-                    ]);
+                if ($group_of_user->getIsActive()) {
+                    array_push($groups,
+                        [
+                            'group_id' => $group_of_user->getId(),
+                            'group_name' => $group_of_user->getName(),
+                        ]);
+                }
             }
             json_encode($groups);
             return self::encodeToken($this->secret_key,

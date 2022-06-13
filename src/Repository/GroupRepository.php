@@ -182,7 +182,7 @@ class GroupRepository extends ServiceEntityRepository
         foreach ($group->getParticipants() as $participant) {
             $participantsId[] = $participant->getId();
         }
-        if ($userId === $adminId || in_array($userId, $participantsId))
+        if (($userId === $adminId || in_array($userId, $participantsId)) && $group->getIsActive())
             return true;
         return false;
     }
