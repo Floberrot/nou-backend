@@ -25,13 +25,11 @@ class GroupRepository extends ServiceEntityRepository
         parent::__construct($registry, Group::class);
     }
 
-
     private function save(Group $group)
     {
         $this->_em->persist($group);
         $this->_em->flush();
     }
-
 
     public function create(string $name, User $user): Group
     {
@@ -198,5 +196,21 @@ class GroupRepository extends ServiceEntityRepository
             }
         }
         return $groups_membership;
+    }
+
+    public function manageAdmin(int $groupId, int $userId, UserRepository $userRepository)
+    {
+        $this->_em->beginTransaction();
+        try {
+            $group = self::findOneById($groupId);
+            $new_admin = $userRepository->find($userId);
+            $group->setAdmin($new_admin);
+            self::save($group);
+            $this->_em->commit();
+        } catch (\Exception $exception) {
+            $this->_em->rollback();
+            throw new \Exception();
+        }
+        return $group;
     }
 }
