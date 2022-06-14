@@ -198,13 +198,13 @@ class GroupRepository extends ServiceEntityRepository
         return $groups_membership;
     }
 
-    public function manageAdmin(int $groupId, int $userId, UserRepository $userRepository)
+    public function manageAdmin(int $groupId, string $new_admin, UserRepository $userRepository)
     {
         $this->_em->beginTransaction();
         try {
             $group = self::findOneById($groupId);
-            $new_admin = $userRepository->find($userId);
-            $group->setAdmin($new_admin);
+            $admin = $userRepository->findOneByUsername($new_admin);
+            $group->setAdmin($admin);
             self::save($group);
             $this->_em->commit();
         } catch (\Exception $exception) {

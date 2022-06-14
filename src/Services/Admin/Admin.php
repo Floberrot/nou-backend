@@ -24,9 +24,9 @@ class Admin
         $this->groupRepository->changeAdmin($groupId, $userId, $this->userRepository);
     }
 
-    public function manageAdmin(int $groupId, int $userId)
+    public function manageAdmin(int $groupId, string $new_admin)
     {
-        return $this->groupRepository->manageAdmin($groupId, $userId, $this->userRepository);
+        return $this->groupRepository->manageAdmin($groupId, $new_admin, $this->userRepository);
     }
 
     public function checkIfUserIsAdmin(int $groupId, int $userId): bool
