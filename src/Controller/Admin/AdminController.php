@@ -23,7 +23,7 @@ class AdminController extends AbstractController
     }
     /**
      * Change admin of group
-     * @Route("group/{groupId}/user/{userId}", name="admin_manage", methods={"POST"})
+     * @Route("group/{groupId}/new-admin/{new_admin}", name="admin_manage", methods={"POST"})
      * @OA\Response(
      *     response=200,
      *     description="User(amdin) is modified"
@@ -40,13 +40,16 @@ class AdminController extends AbstractController
      */
     public function manageAdmin(Request $request) :JsonResponse
     {
-        $userId = $request->get('userId');
+        $new_admin = $request->get('new_admin');
         $groupId = $request->get('groupId');
         $admin = new Admin($this->groupRepository, $this->userRepository);
-        $admin->changeAdmin($userId, $groupId);
+        $group = $admin->manageAdmin($groupId, $new_admin);
         return new JsonResponse(
             [
-                'message' => 'Admin Modified'
+                'message' => 'Admin Modified',
+                'new_admin' => $group->getAdmin()->getUsername(),
+                'group_name' => $group->getName(),
+                'group_id' => $group->getId(),
             ], 200
         );
     }
