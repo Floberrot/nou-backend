@@ -99,7 +99,7 @@ class AuthController extends AbstractController
     {
         try {
             $res = json_decode($request->getContent());
-            $auth = new AuthManagement($this->userRepository, $this->secret_key);
+            $auth = new AuthManagement($this->userRepository, $this->groupRepository, $this->secret_key);
             return new JsonResponse(
                 [
                     "token" => $auth->register($res->password, $res->email, $res->username),

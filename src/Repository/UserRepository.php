@@ -35,7 +35,7 @@ class UserRepository extends ServiceEntityRepository
     /**
      * @throws \Exception
      */
-    public function register (string $password, string $email, string $username)
+    public function register (string $password, string $email, string $username): User
     {
         $isExistUser = $this->findOneBy(["username" => $username]);
         if ($isExistUser) {
@@ -51,6 +51,7 @@ class UserRepository extends ServiceEntityRepository
                 ->setIsActive(true);
             self::save($user);
             $this->_em->commit();
+            return $user;
         } catch (\Exception $exception) {
             $this->_em->rollback();
             throw new \Exception();
