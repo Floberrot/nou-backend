@@ -84,7 +84,13 @@ class NoteController extends AbstractController
             $note = null;
             if ($request->get('format') === 'file') {
                 $note = $note_management->create($request->get('group'), $request->get('author'), $request->get('format'), $request->files->get('file')->getClientOriginalName());
-                FileSystem::upload(file_get_contents($request->files->get('file')), $request->get('group'), $request->get('group_id'), $request->files->get('file')->getClientOriginalName());
+                trim($request->files->get('file')->getClientOriginalName());
+                FileSystem::upload(
+                    file_get_contents($request->files->get('file')),
+                    $request->get('group'),
+                    $request->get('group_id'),
+                    $request->files->get('file')->getClientOriginalName()
+                );
             } else if ($request->get('format') === 'text') {
                 $note = $note_management->create($request->get('group'), $request->get('author'), $request->get('format'), $request->get('content'));
             }
@@ -245,7 +251,7 @@ class NoteController extends AbstractController
 
     /**
      * Change status of the note (DONe or TO-DO)
-     * @Route("/note/status", name="change_status", methods={"POST"})
+     * @Route("/note/status/{note_id}", name="change_status", methods={"POST"})
      * @OA\Response(
      *     response=200,
      *     description="Note is updated"
@@ -263,7 +269,7 @@ class NoteController extends AbstractController
     public function changeStatus(Request $request): JsonResponse
     {
         try {
-            $note_id = json_decode($request->getContent())->note_id;
+            $note_id = $request->get('note_id');
             $note_management = new NoteManagement($this->noteRepository, $this->userRepository, $this->groupRepository);
             $note_management->changeStatusForNote($note_id);
             return new JsonResponse(
